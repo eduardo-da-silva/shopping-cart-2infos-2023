@@ -8,7 +8,11 @@ const carrinho = ref({
 })
 
 function adicionarAoCarrinho(livro) {
-  carrinho.value.itens.push(livro)
+  carrinho.value.itens.push({
+    ...livro,
+    quantidade: 1,
+    total: livro.price
+  })
   carrinho.value.total += livro.price
 }
 
@@ -37,9 +41,19 @@ function formatarPreco(preco) {
       <div v-else>
         <div class="item-carrinho" v-for="(item, index) in carrinho.itens" :key="index">
           <div class="info-livro">
-            <img :src="item.img" class="icon-capa-livro" />
-            <p>{{ item.title }}</p>
-            <p class="info-livro-preco">{{ formatarPreco(item.price) }}</p>
+            <div class="imagem-livro">
+              <img :src="item.img" class="icon-capa-livro" />
+            </div>
+            <div class="detalhes-livro">
+              <div>
+                <p>{{ item.title }}</p>
+                <p class="info-livro-preco">{{ formatarPreco(item.price) }}/un</p>
+              </div>
+              <div>
+                <p>Qtde: {{ item.quantidade }}</p>
+                <p>Total: {{ formatarPreco(item.total) }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
@@ -53,7 +67,21 @@ function formatarPreco(preco) {
   display: flex;
   margin-bottom: 10px;
 }
+.detalhes-livro {
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+}
 
+.detalhes-livro p {
+  margin: 0;
+}
+
+.detalhes-livro div {
+  display: flex;
+  justify-content: space-between;
+  width: 100%;
+}
 .info-livro-preco {
   margin-left: auto;
 }
@@ -65,7 +93,7 @@ function formatarPreco(preco) {
   /* display: flex;
   justify-content: space-between; */
   display: grid;
-  grid-template-columns: 4fr 1fr;
+  grid-template-columns: 3fr 1fr;
 }
 
 .carrinho {
