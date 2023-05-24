@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue'
+import { ref } from 'vue'
 import { livros } from '@/_data/livros.js'
 
 const carrinho = ref({
@@ -7,7 +7,14 @@ const carrinho = ref({
   total: 0
 })
 
-const valorTotalCarrinho = computed(() => carrinho.value.total.toFixed(2).replace('.', ','))
+function adicionarAoCarrinho(livro) {
+  carrinho.value.itens.push(livro)
+  carrinho.value.total += livro.price
+}
+
+function formatarPreco(preco) {
+  return 'R$ ' + preco.toFixed(2).replace('.', ',')
+}
 </script>
 
 <template>
@@ -20,18 +27,40 @@ const valorTotalCarrinho = computed(() => carrinho.value.total.toFixed(2).replac
         </div>
         <p class="titulo-livro">{{ livro.title }}</p>
         <p class="autor-livro">{{ livro.author }}</p>
-        <p class="preco-livro">{{ livro.price }}</p>
+        <p class="preco-livro">{{ formatarPreco(livro.price) }}</p>
+        <button @click="adicionarAoCarrinho(livro)">Adicionar ao carrinho</button>
       </div>
     </div>
     <div class="carrinho">
       <h2>Meu carrinho</h2>
-      <p>{{ carrinho.itens }}</p>
-      <p>Total: R$ {{ valorTotalCarrinho }}</p>
+      <p v-if="carrinho.itens.length === 0">Seu carrinho está vazio</p>
+      <div v-else>
+        <div class="item-carrinho" v-for="(item, index) in carrinho.itens" :key="index">
+          <div class="info-livro">
+            <img :src="item.img" class="icon-capa-livro" />
+            <p>{{ item.title }}</p>
+            <p class="info-livro-preco">{{ formatarPreco(item.price) }}</p>
+          </div>
+        </div>
+      </div>
+      <p>Total: {{ formatarPreco(carrinho.total) }}</p>
     </div>
   </div>
 </template>
 
 <style scoped>
+.info-livro {
+  display: flex;
+  margin-bottom: 10px;
+}
+
+.info-livro-preco {
+  margin-left: auto;
+}
+.icon-capa-livro {
+  width: 30px;
+  margin-right: 10px;
+}
 .container-geral {
   /* display: flex;
   justify-content: space-between; */
