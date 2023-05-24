@@ -1,23 +1,47 @@
 <script setup>
+import { ref, computed } from 'vue'
 import { livros } from '@/_data/livros.js'
+
+const carrinho = ref({
+  itens: [],
+  total: 0
+})
+
+const valorTotalCarrinho = computed(() => carrinho.value.total.toFixed(2).replace('.', ','))
 </script>
 
 <template>
   <h1>Minha livraria</h1>
-  <div class="listagem-livros">
-    <div class="card-livro" v-for="livro in livros" :key="livro.id">
-      <div class="wrap-livro">
-        <img :src="livro.img" alt="Capa do livro" class="capa-livro" />
+  <div class="container-geral">
+    <div class="listagem-livros">
+      <div class="card-livro" v-for="livro in livros" :key="livro.id">
+        <div class="wrap-livro">
+          <img :src="livro.img" alt="Capa do livro" class="capa-livro" />
+        </div>
+        <p class="titulo-livro">{{ livro.title }}</p>
+        <p class="autor-livro">{{ livro.author }}</p>
+        <p class="preco-livro">{{ livro.price }}</p>
       </div>
-      <p class="titulo-livro">{{ livro.title }}</p>
-      <p class="autor-livro">{{ livro.author }}</p>
-      <p class="preco-livro">{{ livro.price }}</p>
+    </div>
+    <div class="carrinho">
+      <h2>Meu carrinho</h2>
+      <p>{{ carrinho.itens }}</p>
+      <p>Total: R$ {{ valorTotalCarrinho }}</p>
     </div>
   </div>
-  <!-- {{ livros }} -->
 </template>
 
 <style scoped>
+.container-geral {
+  /* display: flex;
+  justify-content: space-between; */
+  display: grid;
+  grid-template-columns: 4fr 1fr;
+}
+
+.carrinho {
+  /* min-width: 20%; */
+}
 .listagem-livros {
   display: flex;
   flex-wrap: wrap;
