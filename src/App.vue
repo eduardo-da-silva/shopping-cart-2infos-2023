@@ -7,13 +7,32 @@ const carrinho = ref({
   total: 0
 })
 
+function atualizaQuantidadeItem(item) {
+  carrinho.value.total -= item.total
+  item.total = item.price * item.quantidade
+  carrinho.value.total += item.total
+}
+
+function removerItemCarrinho(item) {
+  const index = carrinho.value.itens.findIndex((i) => i.id === item.id)
+  carrinho.value.total -= item.total
+  carrinho.value.itens.splice(index, 1)
+}
+
 function adicionarAoCarrinho(livro) {
-  carrinho.value.itens.push({
-    ...livro,
-    quantidade: 1,
-    total: livro.price
-  })
-  carrinho.value.total += livro.price
+  const index = carrinho.value.itens.findIndex((item) => item.id === livro.id)
+  if (index === -1) {
+    carrinho.value.itens.push({
+      ...livro,
+      quantidade: 1,
+      total: livro.price
+    })
+    carrinho.value.total += livro.price
+  } else {
+    carrinho.value.itens[index].quantidade++
+    carrinho.value.itens[index].total += livro.price
+    carrinho.value.total += livro.price
+  }
 }
 
 function formatarPreco(preco) {
@@ -50,7 +69,16 @@ function formatarPreco(preco) {
                 <p class="info-livro-preco">{{ formatarPreco(item.price) }}/un</p>
               </div>
               <div>
-                <p>Qtde: {{ item.quantidade }}</p>
+                <p>
+                  Quantidade:
+                  <input
+                    type="number"
+                    v-model="item.quantidade"
+                    @change="atualizaQuantidadeItem(item)"
+                    min="1"
+                  />
+                </p>
+                <button @click="removerItemCarrinho(item)">Remover</button>
                 <p>Total: {{ formatarPreco(item.total) }}</p>
               </div>
             </div>
@@ -72,11 +100,9 @@ function formatarPreco(preco) {
   flex-direction: column;
   width: 100%;
 }
-
 .detalhes-livro p {
   margin: 0;
 }
-
 .detalhes-livro div {
   display: flex;
   justify-content: space-between;
