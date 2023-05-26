@@ -45,53 +45,66 @@ function formatarPreco(preco) {
   <div class="container-geral">
     <div class="listagem-livros">
       <div class="card-livro" v-for="livro in livros" :key="livro.id">
-        <div class="wrap-livro">
-          <img :src="livro.img" alt="Capa do livro" class="capa-livro" />
+        <div class="card-info-livro">
+          <div class="wrap-livro">
+            <img :src="livro.img" alt="Capa do livro" class="capa-livro" />
+          </div>
+          <p class="titulo-livro">{{ livro.title }}</p>
+          <p class="autor-livro">{{ livro.author }}</p>
+          <p class="preco-livro">{{ formatarPreco(livro.price) }}</p>
         </div>
-        <p class="titulo-livro">{{ livro.title }}</p>
-        <p class="autor-livro">{{ livro.author }}</p>
-        <p class="preco-livro">{{ formatarPreco(livro.price) }}</p>
-        <button @click="adicionarAoCarrinho(livro)">Adicionar ao carrinho</button>
+        <div class="card-buttons-livros">
+          <button @click="adicionarAoCarrinho(livro)">Adicionar ao carrinho</button>
+        </div>
       </div>
     </div>
     <div class="carrinho">
       <h2>Meu carrinho</h2>
-      <p v-if="carrinho.itens.length === 0">Seu carrinho está vazio</p>
-      <div v-else>
-        <div class="item-carrinho" v-for="(item, index) in carrinho.itens" :key="index">
-          <div class="info-livro">
-            <div class="imagem-livro">
-              <img :src="item.img" class="icon-capa-livro" />
-            </div>
-            <div class="detalhes-livro">
-              <div>
-                <p>{{ item.title }}</p>
-                <p class="info-livro-preco">{{ formatarPreco(item.price) }}/un</p>
+      <div class="wrap-carrinho">
+        <p v-if="carrinho.itens.length === 0">Seu carrinho está vazio</p>
+        <div v-else>
+          <div class="item-carrinho" v-for="(item, index) in carrinho.itens" :key="index">
+            <div class="info-livro">
+              <div class="imagem-livro">
+                <img :src="item.img" class="icon-capa-livro" />
               </div>
-              <div>
-                <p>
-                  Quantidade:
-                  <input
-                    type="number"
-                    v-model="item.quantidade"
-                    @change="atualizaQuantidadeItem(item)"
-                    min="1"
-                  />
-                </p>
-                <button @click="removerItemCarrinho(item)">Remover</button>
-                <p>Total: {{ formatarPreco(item.total) }}</p>
+              <div class="detalhes-livro">
+                <div>
+                  <p>{{ item.title }}</p>
+                  <p class="info-livro-preco">{{ formatarPreco(item.price) }}/un</p>
+                </div>
+                <div>
+                  <p>
+                    Quantidade:
+                    <input
+                      type="number"
+                      v-model="item.quantidade"
+                      @change="atualizaQuantidadeItem(item)"
+                      min="1"
+                    />
+                  </p>
+                  <button @click="removerItemCarrinho(item)">&#128465;</button>
+                  <p>Total: {{ formatarPreco(item.total) }}</p>
+                </div>
               </div>
             </div>
           </div>
         </div>
+        <p class="carrinho-total">Total: {{ formatarPreco(carrinho.total) }}</p>
       </div>
-      <p>Total: {{ formatarPreco(carrinho.total) }}</p>
     </div>
   </div>
 </template>
 
 <style scoped>
-.info-livro {
+.wrap-carrinho .carrinho-total {
+  position: fixed;
+  bottom: 3%;
+  font-size: 1.5rem;
+  font-weight: bold;
+}
+
+.item-carrinho .info-livro {
   display: flex;
   margin-bottom: 10px;
 }
@@ -108,6 +121,26 @@ function formatarPreco(preco) {
   justify-content: space-between;
   width: 100%;
 }
+
+.detalhes-livro input[type='number'] {
+  width: 50px;
+  text-align: center;
+  border: none;
+  border-bottom: 1px solid black;
+  background-color: transparent;
+  margin-left: 10px;
+}
+
+.detalhes-livro button {
+  background-color: transparent;
+  border: none;
+  cursor: pointer;
+  font-size: 1.5rem;
+  color: black;
+  padding: 0;
+  margin: 0;
+}
+
 .info-livro-preco {
   margin-left: auto;
 }
@@ -136,6 +169,9 @@ function formatarPreco(preco) {
   background-color: beige;
   border-radius: 10px;
   width: 180px;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
 }
 
 .wrap-livro {
